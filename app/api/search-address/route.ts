@@ -1,15 +1,17 @@
-import { auth } from "@clerk/nextjs";
+// import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 
 const BASE_URL = "https://api.mapbox.com/search/searchbox/v1/suggest";
 
 export async function GET(req: Request) {
-  const { userId } = auth();
+  // const { userId } = auth();
 
-  if (!userId) {
-    console.log("no auth");
-    return null;
-  }
+  // if (!userId) {
+  //   console.log("no auth");
+  //   return null;
+  // }
+
+  // console.log("userId", userId);
 
   const { searchParams } = new URL(req.url);
 

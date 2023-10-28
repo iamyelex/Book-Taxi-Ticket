@@ -1,4 +1,4 @@
-import { UserButton } from "@clerk/nextjs";
+// import { UserButton } from "@clerk/nextjs";
 import Image from "next/image";
 
 const navList = ["Home", "History", "Help"];
@@ -29,7 +29,7 @@ export default async function Navbar() {
         </ul>
       </div>
 
-      <UserButton afterSignOutUrl="/" />
+      {/* <UserButton afterSignOutUrl="/" /> */}
     </nav>
   );
 }
