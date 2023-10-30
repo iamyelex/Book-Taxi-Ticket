@@ -1,4 +1,5 @@
 import Booking from "@/app/(booking)/Booking";
+import MapBox from "@/app/(map)/MapBox";
 
 export default function Home() {
   return (
@@ -6,7 +7,9 @@ export default function Home() {
       <div>
         <Booking />
       </div>
-      <div className="col-span-2 bg-pink-200">Map</div>
+      <div className="col-span-2">
+        <MapBox />
+      </div>
     </section>
   );
 }
