@@ -10,7 +10,7 @@ import Image from "next/image";
 
 export default function MapBox() {
   const { userLocation, setUserLocation } = useContext(UserLocationContext);
-  console.log(userLocation);
+  // console.log(userLocation);
 
   return (
     <div className="p-5">

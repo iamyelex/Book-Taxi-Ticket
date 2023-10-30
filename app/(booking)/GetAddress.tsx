@@ -1,13 +1,25 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+
+import { DestinationCoordinateContext } from "@/context/DestinationCordinateContext";
+import { LocationCoordinateContext } from "@/context/LocationCordinateContext";
+
+const MAP_RETRIEVE_URL = "https://api.mapbox.com/search/searchbox/v1/retrieve/";
+const session_token = "b0892745-ae4a-4846-b6ae-f25966689e97";
 
 export default function GetAddress() {
   const [location, setLocation] = useState<string>();
   const [changeLocation, setChangeLocation] = useState(false);
+  const { locationCoordinate, setLocationCoordinate } = useContext(
+    LocationCoordinateContext,
+  );
 
   const [destination, setDestination] = useState<string>();
   const [changeDestination, setChangeDestination] = useState(false);
+  const { destinationCoordinate, setDestinationCoordinate } = useContext(
+    DestinationCoordinateContext,
+  );
 
   const [addressList, setAddressList] = useState<any>([]);
 
@@ -27,7 +39,7 @@ export default function GetAddress() {
         }
 
         const result = await res.json();
-        console.log(result);
+        // console.log(result);
 
         setAddressList(result);
       };
@@ -38,16 +50,46 @@ export default function GetAddress() {
     return () => clearTimeout(delay);
   }, [changeLocation, destination, location]);
 
-  const pickLocationAddressHandler = function (address: string) {
-    setLocation(address);
+  const pickLocationAddressHandler = async function (list: any) {
+    setLocation(list.full_address);
     setAddressList([]);
     setChangeLocation(false);
+
+    const res = await fetch(
+      MAP_RETRIEVE_URL +
+        list.mapbox_id +
+        "?session_token=" +
+        session_token +
+        "&access_token=" +
+        process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN,
+    );
+
+    const data = await res.json();
+    const coord = data.features[0].geometry.coordinates;
+
+    setLocationCoordinate({ lng: data[0], lat: data[1] });
+    console.log(data);
   };
 
-  const pickDestinationAddressHandler = function (address: string) {
-    setDestination(address);
+  const pickDestinationAddressHandler = async function (list: any) {
+    setDestination(list.full_address);
     setAddressList([]);
     setChangeDestination(false);
+
+    const res = await fetch(
+      MAP_RETRIEVE_URL +
+        list.mapbox_id +
+        "?session_token=" +
+        session_token +
+        "&access_token=" +
+        process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN,
+    );
+
+    const data = await res.json();
+    // const coord = data.features[0].geometry.coordinates;
+
+    // setDestinationCoordinate({ lng: data[0], lat: data[1] });
+    console.log(data);
   };
 
   return (
@@ -71,7 +113,7 @@ export default function GetAddress() {
               <address
                 key={i}
                 className="cursor-pointer p-3 hover:bg-gray-100"
-                onClick={() => pickLocationAddressHandler(list.full_address)}
+                onClick={() => pickLocationAddressHandler(list)}
               >
                 {list.full_address}
               </address>
@@ -98,7 +140,7 @@ export default function GetAddress() {
               <address
                 key={i}
                 className="cursor-pointer p-3 hover:bg-gray-100"
-                onClick={() => pickDestinationAddressHandler(list.full_address)}
+                onClick={() => pickDestinationAddressHandler(list)}
               >
                 {list.full_address}
               </address>
