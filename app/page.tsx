@@ -6,13 +6,14 @@ import { UserLocationContext } from "@/context/UserLocationContext";
 import Booking from "@/app/(booking)/Booking";
 import MapBox from "@/app/(map)/MapBox";
 
-type userLocationProps = {
-  lat: number;
-  lng: number;
-};
+// type userLocationProps = {
+//   lat: number;
+//   lng: number;
+// };
 
 export default function Home() {
-  const [userLocation, setUserLocation] = useState<userLocationProps>();
+  const [userLocation, setUserLocation] = useState<any>();
+  console.log(userLocation);
 
   const getUserLocation = function () {
     navigator.geolocation.getCurrentPosition((pos) => {
@@ -25,7 +26,7 @@ export default function Home() {
   }, []);
 
   return (
-    <UserLocationContext.Provider value={(userLocation, setUserLocation)}>
+    <UserLocationContext.Provider value={{ userLocation, setUserLocation }}>
       <section className="grid grid-cols-1 md:grid-cols-3">
         <div>
           <Booking />

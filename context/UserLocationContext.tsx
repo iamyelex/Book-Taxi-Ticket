@@ -1,3 +1,8 @@
 import { createContext } from "react";
 
-export const UserLocationContext = createContext({});
+// type userLocationContextProps = {
+//   userLocation: number;
+//   setUserLocation: () => number;
+// };
+
+export const UserLocationContext = createContext<any>(null);
