@@ -1,16 +1,47 @@
 "use client";
 
-import { Map, Marker } from "react-map-gl";
+import { useContext, useEffect, useRef } from "react";
+import { Map } from "react-map-gl";
 
-import { useContext } from "react";
 import { UserLocationContext } from "@/context/UserLocationContext";
+import { LocationCoordinateContext } from "@/context/LocationCordinateContext";
+import { DestinationCoordinateContext } from "@/context/DestinationCordinateContext";
+import Markers from "@/app/(map)/Marker";
 
 import "mapbox-gl/dist/mapbox-gl.css";
-import Image from "next/image";
 
 export default function MapBox() {
+  const mapRef = useRef<any>();
+
   const { userLocation, setUserLocation } = useContext(UserLocationContext);
+  const { locationCoordinate, setLocationCoordinate } = useContext(
+    LocationCoordinateContext,
+  );
+  const { destinationCoordinate, setDestinationCoordinate } = useContext(
+    DestinationCoordinateContext,
+  );
+
   // console.log(userLocation);
+
+  //Use to fly to the location of marker location
+  useEffect(() => {
+    if (locationCoordinate) {
+      mapRef.current?.flyTo({
+        center: [locationCoordinate.lng, locationCoordinate.lat],
+        duration: 2500,
+      });
+    }
+  }, [locationCoordinate]);
+
+  //Use to fly to the location of marker destination
+  useEffect(() => {
+    if (destinationCoordinate) {
+      mapRef.current?.flyTo({
+        center: [destinationCoordinate.lng, destinationCoordinate.lat],
+        duration: 2500,
+      });
+    }
+  }, [destinationCoordinate]);
 
   return (
     <div className="p-5">
@@ -19,6 +50,7 @@ export default function MapBox() {
       <div className="overflow-hidden rounded-lg">
         {userLocation ? (
           <Map
+            ref={mapRef}
             mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
             initialViewState={{
               longitude: userLocation?.lng,
@@ -28,14 +60,7 @@ export default function MapBox() {
             style={{ width: "100%", height: 500, borderRadius: 10 }}
             mapStyle="mapbox://styles/mapbox/streets-v9"
           >
-            <Marker
-              longitude={userLocation?.lng}
-              latitude={userLocation?.lat}
-              anchor="bottom"
-            >
-              {/* <img src="./pin.png" /> */}
-              <Image src="/pin.png" alt="pin" width={30} height={30} />
-            </Marker>
+            <Markers />
           </Map>
         ) : null}
       </div>

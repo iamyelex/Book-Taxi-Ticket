@@ -67,8 +67,9 @@ export default function GetAddress() {
     const data = await res.json();
     const coord = data.features[0].geometry.coordinates;
 
-    setLocationCoordinate({ lng: data[0], lat: data[1] });
+    setLocationCoordinate({ lng: coord[0], lat: coord[1] });
     console.log(data);
+    console.log(coord);
   };
 
   const pickDestinationAddressHandler = async function (list: any) {
@@ -86,9 +87,9 @@ export default function GetAddress() {
     );
 
     const data = await res.json();
-    // const coord = data.features[0].geometry.coordinates;
+    const coord = data.features[0].geometry.coordinates;
 
-    // setDestinationCoordinate({ lng: data[0], lat: data[1] });
+    setDestinationCoordinate({ lng: coord[0], lat: coord[1] });
     console.log(data);
   };
 
