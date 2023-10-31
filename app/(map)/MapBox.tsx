@@ -9,6 +9,13 @@ import { DestinationCoordinateContext } from "@/context/DestinationCordinateCont
 import Markers from "@/app/(map)/Marker";
 
 import "mapbox-gl/dist/mapbox-gl.css";
+import { DirectionDataContext } from "@/context/DirectionDataContext";
+import MapBoxRoute from "./MapBoxRoute";
+
+const MAPBOX_DRIVING_ENDPOINT =
+  "https://api.mapbox.com/directions/v5/mapbox/driving/";
+
+const session_token = "b0892745-ae4a-4846-b6ae-f25966689e97";
 
 export default function MapBox() {
   const mapRef = useRef<any>();
@@ -20,6 +27,7 @@ export default function MapBox() {
   const { destinationCoordinate, setDestinationCoordinate } = useContext(
     DestinationCoordinateContext,
   );
+  const { directionData, setDirectionData } = useContext(DirectionDataContext);
 
   // console.log(userLocation);
 
@@ -43,6 +51,36 @@ export default function MapBox() {
     }
   }, [destinationCoordinate]);
 
+  useEffect(() => {
+    const getDirectionRoute = async function () {
+      const res = await fetch(
+        MAPBOX_DRIVING_ENDPOINT +
+          locationCoordinate.lng +
+          "," +
+          locationCoordinate.lat +
+          ";" +
+          destinationCoordinate.lng +
+          "," +
+          destinationCoordinate.lat +
+          "?overview=full&geometries=geojson&access_token=" +
+          process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      const data = await res.json();
+      console.log(data);
+      setDirectionData(data);
+    };
+
+    if (locationCoordinate && destinationCoordinate) {
+      getDirectionRoute();
+    }
+  }, [destinationCoordinate, locationCoordinate, setDirectionData]);
+
   return (
     <div className="p-5">
       <h2 className="text-xl font-semibold">Map</h2>
@@ -61,6 +99,12 @@ export default function MapBox() {
             mapStyle="mapbox://styles/mapbox/streets-v9"
           >
             <Markers />
+
+            {directionData?.routes ? (
+              <MapBoxRoute
+                coordinate={directionData?.routes[0]?.geometry?.coordinates}
+              />
+            ) : null}
           </Map>
         ) : null}
       </div>

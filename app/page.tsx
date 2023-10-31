@@ -7,6 +7,7 @@ import Booking from "@/app/(booking)/Booking";
 import MapBox from "@/app/(map)/MapBox";
 import { LocationCoordinateContext } from "@/context/LocationCordinateContext";
 import { DestinationCoordinateContext } from "@/context/DestinationCordinateContext";
+import { DirectionDataContext } from "@/context/DirectionDataContext";
 
 // type userLocationProps = {
 //   lat: number;
@@ -18,6 +19,7 @@ export default function Home() {
 
   const [locationCoordinate, setLocationCoordinate] = useState<any>([]);
   const [destinationCoordinate, setDestinationCoordinate] = useState<any>([]);
+  const [directionData, setDirectionData] = useState<any>([]);
 
   const getUserLocation = function () {
     navigator.geolocation.getCurrentPosition((pos) => {
@@ -37,14 +39,18 @@ export default function Home() {
         <DestinationCoordinateContext.Provider
           value={{ destinationCoordinate, setDestinationCoordinate }}
         >
-          <section className="grid grid-cols-1 md:grid-cols-3">
-            <div>
-              <Booking />
-            </div>
-            <div className="col-span-2">
-              <MapBox />
-            </div>
-          </section>
+          <DirectionDataContext.Provider
+            value={{ directionData, setDirectionData }}
+          >
+            <section className="grid grid-cols-1 md:grid-cols-3">
+              <div>
+                <Booking />
+              </div>
+              <div className="col-span-2">
+                <MapBox />
+              </div>
+            </section>
+          </DirectionDataContext.Provider>
         </DestinationCoordinateContext.Provider>
       </LocationCoordinateContext.Provider>
     </UserLocationContext.Provider>
