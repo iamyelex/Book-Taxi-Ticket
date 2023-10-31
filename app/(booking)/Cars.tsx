@@ -1,12 +1,22 @@
 "use state";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useContext, useState } from "react";
 
 import { carList } from "@/data/carList";
+import { DirectionDataContext } from "@/context/DirectionDataContext";
 
 export default function Cars() {
   const [selectedCar, setSelectedCar] = useState(0);
+  const { directionData, setDirectionData } = useContext(DirectionDataContext);
+
+  const getCost = function (charges: number) {
+    const distance = directionData.routes[0].distance;
+    const distanceInMiles = distance * 0.00621371;
+
+    const cost = charges * distanceInMiles;
+    return cost.toFixed(2);
+  };
 
   return (
     <section className="mt-3">
@@ -32,7 +42,8 @@ export default function Cars() {
 
             <div className="flex items-center justify-between text-xs">
               <h2 className="text-gray-400">{car.name}</h2>
-              <span>${car.charges * 10}</span>
+
+              {directionData.routes && <span>${getCost(car.charges)}</span>}
             </div>
           </div>
         ))}
