@@ -4,7 +4,7 @@ import { useState } from "react";
 import { CardsData } from "@/data/cardsData";
 
 export default function Card() {
-  const [selectPayment, setSelectPayment] = useState(0);
+  const [selectPayment, setSelectPayment] = useState(1);
 
   return (
     <div>

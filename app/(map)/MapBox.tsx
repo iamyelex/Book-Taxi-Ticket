@@ -11,6 +11,7 @@ import Markers from "@/app/(map)/Marker";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { DirectionDataContext } from "@/context/DirectionDataContext";
 import MapBoxRoute from "./MapBoxRoute";
+import DistanceTime from "./DistanceTime";
 
 const MAPBOX_DRIVING_ENDPOINT =
   "https://api.mapbox.com/directions/v5/mapbox/driving/";
@@ -107,6 +108,10 @@ export default function MapBox() {
             ) : null}
           </Map>
         ) : null}
+      </div>
+
+      <div className="absolute bottom-10 right-5 z-20 hidden md:block">
+        <DistanceTime />
       </div>
     </div>
   );

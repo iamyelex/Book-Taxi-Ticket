@@ -1,13 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useContext, useEffect, useState } from "react";
 
+// import { SelectedCarAmountContext } from "@/context/SelectedCarAmountContext";
 import GetAddress from "@/app/(booking)/GetAddress";
 import Cars from "@/app/(booking)/Cars";
 import Card from "@/app/(booking)/Card";
+import { useCarAmount } from "@/store/useCarAmount";
 
 export default function Booking() {
   const [screenHeight, setScreenHeight] = useState(0);
+  // const { carAmount, setCarAmount } = useContext(SelectedCarAmountContext);
+  const { carAmount } = useCarAmount();
+  console.log(carAmount);
+  const router = useRouter();
   //   const screenHeight = window.innerHeight;
 
   useEffect(() => {
@@ -25,7 +32,13 @@ export default function Booking() {
 
         <Card />
 
-        <button className="mt-4 w-full rounded-md bg-yellow-400 p-1">
+        <button
+          className={`mt-4 w-full rounded-md bg-yellow-400 p-1 ${
+            !carAmount ? "bg-gray-100" : ""
+          }`}
+          onClick={() => router.push("/payment")}
+          disabled={!carAmount}
+        >
           Book
         </button>
       </div>

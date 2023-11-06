@@ -9,11 +9,6 @@ import { LocationCoordinateContext } from "@/context/LocationCordinateContext";
 import { DestinationCoordinateContext } from "@/context/DestinationCordinateContext";
 import { DirectionDataContext } from "@/context/DirectionDataContext";
 
-// type userLocationProps = {
-//   lat: number;
-//   lng: number;
-// };
-
 export default function Home() {
   const [userLocation, setUserLocation] = useState<any>();
 
