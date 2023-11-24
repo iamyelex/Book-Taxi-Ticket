@@ -2,10 +2,10 @@ import { MAP_RETRIEVE_URL, session_token } from "./constant";
 
 export const pickAddress = async function (
   list: any,
-  setAddress,
-  setAddressList,
-  setChange,
-  setCoordinate,
+  setAddress: any,
+  setAddressList: any,
+  setChange: any,
+  setCoordinate: any,
 ) {
   setAddress(list.full_address);
   setAddressList([]);
