@@ -2,7 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-const navList = ["Home", "History", "Help"];
+// const navList = ["Home", "History", "Help"];
 
 export default async function Navbar() {
   return (
@@ -20,7 +20,7 @@ export default async function Navbar() {
           />
         </Link>
 
-        <ul className="hidden gap-6 md:flex">
+        {/* <ul className="hidden gap-6 md:flex">
           {navList.map((list) => (
             <li
               key={list}
@@ -29,7 +29,7 @@ export default async function Navbar() {
               {list}
             </li>
           ))}
-        </ul>
+        </ul> */}
       </div>
 
       {/* <UserButton afterSignOutUrl="/" /> */}

@@ -4,9 +4,7 @@ import { useContext, useEffect, useState } from "react";
 
 import { DestinationCoordinateContext } from "@/context/DestinationCordinateContext";
 import { LocationCoordinateContext } from "@/context/LocationCordinateContext";
-
-const MAP_RETRIEVE_URL = "https://api.mapbox.com/search/searchbox/v1/retrieve/";
-const session_token = "b0892745-ae4a-4846-b6ae-f25966689e97";
+import { MAP_RETRIEVE_URL, session_token } from "@/utils/constant";
 
 export default function GetAddress() {
   const [location, setLocation] = useState<string>();
@@ -22,6 +20,8 @@ export default function GetAddress() {
   );
 
   const [addressList, setAddressList] = useState<any>([]);
+  console.log(addressList);
+  console.log(typeof addressList);
 
   useEffect(() => {
     const delay = setTimeout(() => {
@@ -30,16 +30,16 @@ export default function GetAddress() {
 
         const query = changeLocation ? location : destination;
 
+        if (query === undefined) return;
+
         const res = await fetch("/api/search-address?q=" + query, {
           headers: { "Content-Type": "application/json" },
         });
 
-        if (!res) {
-          return null;
-        }
+        if (!res.ok) return;
 
         const result = await res.json();
-        // console.log(result);
+        console.log(result);
 
         setAddressList(result);
       };
@@ -50,47 +50,40 @@ export default function GetAddress() {
     return () => clearTimeout(delay);
   }, [changeLocation, destination, location]);
 
-  const pickLocationAddressHandler = async function (list: any) {
+  const pickLocationAddressHandler = async function (list: {
+    full_address: string;
+    mapbox_id: number;
+  }) {
     setLocation(list.full_address);
     setAddressList([]);
     setChangeLocation(false);
 
     const res = await fetch(
-      MAP_RETRIEVE_URL +
-        list.mapbox_id +
-        "?session_token=" +
-        session_token +
-        "&access_token=" +
-        process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN,
+      `${MAP_RETRIEVE_URL}${list.mapbox_id}?session_token=${session_token}&access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`,
     );
 
     const data = await res.json();
     const coord = data.features[0].geometry.coordinates;
 
     setLocationCoordinate({ lng: coord[0], lat: coord[1] });
-    console.log(data);
-    console.log(coord);
   };
 
-  const pickDestinationAddressHandler = async function (list: any) {
+  const pickDestinationAddressHandler = async function (list: {
+    full_address: string;
+    mapbox_id: number;
+  }) {
     setDestination(list.full_address);
     setAddressList([]);
     setChangeDestination(false);
 
     const res = await fetch(
-      MAP_RETRIEVE_URL +
-        list.mapbox_id +
-        "?session_token=" +
-        session_token +
-        "&access_token=" +
-        process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN,
+      `${MAP_RETRIEVE_URL}${list.mapbox_id}?session_token=${session_token}&access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`,
     );
 
     const data = await res.json();
     const coord = data.features[0].geometry.coordinates;
 
     setDestinationCoordinate({ lng: coord[0], lat: coord[1] });
-    console.log(data);
   };
 
   return (
@@ -103,22 +96,26 @@ export default function GetAddress() {
           onChange={(e) => {
             setChangeLocation(true);
             setLocation(e.target.value);
-            // if (e.target.value > 1)
           }}
           className="w-full rounded-md border bg-white p-1 outline-none focus:border-yellow-200"
         />
 
         {addressList?.suggestions && changeLocation ? (
           <div className="absolute w-full rounded-md bg-red-400 p-1 shadow-md">
-            {addressList?.suggestions?.map((list: any, i: number) => (
-              <address
-                key={i}
-                className="cursor-pointer p-3 hover:bg-gray-100"
-                onClick={() => pickLocationAddressHandler(list)}
-              >
-                {list.full_address}
-              </address>
-            ))}
+            {addressList?.suggestions?.map(
+              (
+                list: { full_address: string; mapbox_id: number },
+                i: number,
+              ) => (
+                <address
+                  key={i}
+                  className="cursor-pointer p-3 hover:bg-gray-100"
+                  onClick={() => pickLocationAddressHandler(list)}
+                >
+                  {list.full_address}
+                </address>
+              ),
+            )}
           </div>
         ) : null}
       </div>
@@ -137,15 +134,20 @@ export default function GetAddress() {
 
         {addressList?.suggestions && changeDestination ? (
           <div className="absolute w-full rounded-md bg-red-400 p-1 shadow-md">
-            {addressList?.suggestions?.map((list: any, i: number) => (
-              <address
-                key={i}
-                className="cursor-pointer p-3 hover:bg-gray-100"
-                onClick={() => pickDestinationAddressHandler(list)}
-              >
-                {list.full_address}
-              </address>
-            ))}
+            {addressList?.suggestions?.map(
+              (
+                list: { full_address: string; mapbox_id: number },
+                i: number,
+              ) => (
+                <address
+                  key={i}
+                  className="cursor-pointer p-3 hover:bg-gray-100"
+                  onClick={() => pickDestinationAddressHandler(list)}
+                >
+                  {list.full_address}
+                </address>
+              ),
+            )}
           </div>
         ) : null}
       </div>

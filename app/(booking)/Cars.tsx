@@ -3,21 +3,21 @@
 import Image from "next/image";
 import { useContext, useState } from "react";
 
+import { useCarAmount } from "@/store/useCarAmount";
 import { carList } from "@/data/carList";
 import { DirectionDataContext } from "@/context/DirectionDataContext";
-import { useCarAmount } from "@/store/useCarAmount";
-// import { SelectedCarAmountContext } from "@/context/SelectedCarAmountContext";
+import { kmToMiles } from "@/utils/constant";
 
 export default function Cars() {
   const [selectedCar, setSelectedCar] = useState<number>();
   const { directionData, setDirectionData } = useContext(DirectionDataContext);
-  // const { carAmount, setCarAmount } = useContext(SelectedCarAmountContext);
+
   const { carAmount, changeCarAmount } = useCarAmount();
-  console.log(carAmount);
+  // console.log(carAmount);
 
   const getCost = function (charges: number): number {
     const distance = directionData.routes[0].distance;
-    const distanceInMiles = distance * 0.00621371;
+    const distanceInMiles = distance * kmToMiles;
 
     const cost = charges * distanceInMiles;
     return +cost.toFixed(2);

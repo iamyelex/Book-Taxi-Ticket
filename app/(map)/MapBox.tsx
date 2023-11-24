@@ -54,6 +54,14 @@ export default function MapBox() {
 
   useEffect(() => {
     const getDirectionRoute = async function () {
+      if (
+        locationCoordinate.lng === undefined ||
+        locationCoordinate.lat === undefined ||
+        destinationCoordinate.lat === undefined ||
+        destinationCoordinate.lat === undefined
+      )
+        return;
+
       const res = await fetch(
         MAPBOX_DRIVING_ENDPOINT +
           locationCoordinate.lng +
@@ -71,6 +79,9 @@ export default function MapBox() {
           },
         },
       );
+
+      console.log(res);
+      if (!res.ok) return;
 
       const data = await res.json();
       console.log(data);
